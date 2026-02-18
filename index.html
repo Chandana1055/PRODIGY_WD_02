@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Tech Stopwatch</title>
+    <style>
+        /* CSS Styling */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent-blue: #00d2ff;
+            --accent-purple: #9d50bb;
+            --text-color: #ffffff;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+        }
+
+        .display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #startBtn { border-color: #2ecc71; color: #2ecc71; }
+        #startBtn:hover { background: #2ecc71; color: #fff; }
+
+        #pauseBtn { border-color: #f1c40f; color: #f1c40f; }
+        #pauseBtn:hover { background: #f1c40f; color: #fff; }
+
+        #resetBtn { border-color: #e74c3c; color: #e74c3c; }
+        #resetBtn:hover { background: #e74c3c; color: #fff; }
+
+        #lapBtn { border-color: var(--accent-blue); color: var(--accent-blue); }
+        #lapBtn:hover { background: var(--accent-blue); color: #fff; }
+
+        .laps-container {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            padding-right: 5px;
+        }
+
+        .laps-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .laps-container::-webkit-scrollbar-thumb {
+            background: var(--accent-purple);
+            border-radius: 10px;
+        }
+
+        .lap-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .lap-number { color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Chronos Timer</h1>
+        <div class="display" id="display">00:00:00:00</div>
+        
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="lapBtn">Lap</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+
+        <div class="laps-container" id="laps">
+            </div>
+    </div>
+
+    <script>
+        // JavaScript Logic
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+        let lapCount = 0;
+
+        const display = document.getElementById('display');
+        const lapsList = document.getElementById('laps');
+
+        function timeToString(time) {
+            let diffInHrs = time / 3600000;
+            let hh = Math.floor(diffInHrs);
+
+            let diffInMin = (diffInHrs - hh) * 60;
+            let mm = Math.floor(diffInMin);
+
+            let diffInSec = (diffInMin - mm) * 60;
+            let ss = Math.floor(diffInSec);
+
+            let diffInMs = (diffInSec - ss) * 100;
+            let ms = Math.floor(diffInMs);
+
+            let formattedHH = hh.toString().padStart(2, "0");
+            let formattedMM = mm.toString().padStart(2, "0");
+            let formattedSS = ss.toString().padStart(2, "0");
+            let formattedMS = ms.toString().padStart(2, "0");
+
+            return `${formattedHH}:${formattedMM}:${formattedSS}:${formattedMS}`;
+        }
+
+        function print(txt) {
+            display.innerHTML = txt;
+        }
+
+        function start() {
+            startTime = Date.now() - elapsedTime;
+            timerInterval = setInterval(function printTime() {
+                elapsedTime = Date.now() - startTime;
+                print(timeToString(elapsedTime));
+            }, 10);
+            showButton("PAUSE");
+        }
+
+        function pause() {
+            clearInterval(timerInterval);
+            showButton("PLAY");
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            print("00:00:00:00");
+            elapsedTime = 0;
+            lapCount = 0;
+            lapsList.innerHTML = "";
+            showButton("PLAY");
+        }
+
+        function lap() {
+            if (elapsedTime > 0) {
+                lapCount++;
+                let li = document.createElement("div");
+                li.classList.add("lap-item");
+                li.innerHTML = `<span class="lap-number">Lap ${lapCount}</span> <span>${timeToString(elapsedTime)}</span>`;
+                lapsList.prepend(li);
+            }
+        }
+
+        // Helper to prevent multiple intervals
+        function showButton(buttonKey) {
+            if (buttonKey === "PAUSE") {
+                document.getElementById("startBtn").disabled = true;
+                document.getElementById("startBtn").style.opacity = "0.5";
+            } else {
+                document.getElementById("startBtn").disabled = false;
+                document.getElementById("startBtn").style.opacity = "1";
+            }
+        }
+
+        // Event Listeners
+        document.getElementById("startBtn").addEventListener("click", start);
+        document.getElementById("pauseBtn").addEventListener("click", pause);
+        document.getElementById("resetBtn").addEventListener("click", reset);
+        document.getElementById("lapBtn").addEventListener("click", lap);
+    </script>
+</body>
+</html>

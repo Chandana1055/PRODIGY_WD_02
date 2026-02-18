@@ -1,0 +1,134 @@
+/* Custom properties for easy color management */
+:root {
+    --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --accent-blue: #00d2ff;
+    --accent-purple: #9d50bb;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    overflow: hidden; /* Prevents scrollbars on the main page */
+}
+
+/* Centered Card Layout */
+.container {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: var(--shadow-glow);
+}
+
+/* Digital Timer Typography */
+.display {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 1.5rem 0;
+    letter-spacing: -1px;
+    color: var(--text-primary);
+    text-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+}
+
+/* Button Grid and Logic */
+.controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Dynamic Hover States */
+#startBtn { border-color: #2ecc71; color: #2ecc71; }
+#startBtn:hover:not(:disabled) { background: #2ecc71; color: #fff; box-shadow: 0 0 15px rgba(46, 204, 113, 0.4); }
+
+#pauseBtn { border-color: #f1c40f; color: #f1c40f; }
+#pauseBtn:hover { background: #f1c40f; color: #fff; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+
+#resetBtn { border-color: #e74c3c; color: #e74c3c; }
+#resetBtn:hover { background: #e74c3c; color: #fff; box-shadow: 0 0 15px rgba(231, 76, 60, 0.4); }
+
+#lapBtn { border-color: var(--accent-blue); color: var(--accent-blue); }
+#lapBtn:hover { background: var(--accent-blue); color: #fff; box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
+
+/* Lap List Styling */
+.laps-container {
+    margin-top: 2rem;
+    max-height: 180px;
+    overflow-y: auto;
+    border-top: 1px solid var(--glass-border);
+    padding-top: 10px;
+}
+
+.lap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    animation: fadeIn 0.4s ease;
+}
+
+.lap-number {
+    color: var(--accent-blue);
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar Customization */
+.laps-container::-webkit-scrollbar {
+    width: 4px;
+}
+.laps-container::-webkit-scrollbar-thumb {
+    background: var(--accent-purple);
+    border-radius: 10px;
+}
